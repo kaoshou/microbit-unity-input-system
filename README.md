@@ -15,6 +15,10 @@
 
 本專案為崑山科技大學鄭郁翰老師於「體感遊戲製作」課程所製作的課程教學套件，目的在於讓學生能以低成本、容易取得的 BBC micro:bit 作為體感輸入裝置，快速理解「感測器資料 → Unity 輸入系統 → 遊戲控制」的完整流程。
 
+### 展示影片 (Demo Video)
+
+[![micro:bit Unity Input System Demo](https://img.youtube.com/vi/_y0Zz7hW7lc/0.jpg)](https://www.youtube.com/watch?v=_y0Zz7hW7lc)
+
 本套件將 micro:bit 的三軸加速度與 A/B 按鈕整合為 Unity Input System 的自訂輸入裝置，適合用於：
 
 - 體感遊戲製作課程
