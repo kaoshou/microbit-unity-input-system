@@ -15,6 +15,10 @@ English | [繁體中文](README.md)
 
 This project is a **course teaching package developed by Prof. Yu-Han Cheng at Kun Shan University** for the course **Motion Game Development**. It is designed to help students use the low-cost and widely available BBC micro:bit as a motion input device, while learning the full pipeline of “sensor data → Unity Input System → game control”.
 
+### Demo Video
+
+[![micro:bit Unity Input System Demo](https://img.youtube.com/vi/_y0Zz7hW7lc/0.jpg)](https://www.youtube.com/watch?v=_y0Zz7hW7lc)
+
 The package converts the micro:bit three-axis accelerometer and A/B buttons into a custom Unity Input System device. It is suitable for:
 
 - Motion game development courses
