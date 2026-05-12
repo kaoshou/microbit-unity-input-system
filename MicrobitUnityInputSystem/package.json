@@ -1,0 +1,22 @@
+{
+  "name": "tw.yuhan.microbit-input-system",
+  "version": "1.0.0",
+  "displayName": "micro:bit Unity Input System",
+  "description": "Unity Input System custom device for BBC micro:bit via BLE built-in services, USB binary serial, and USB CSV serial.",
+  "unity": "6000.3",
+  "author": {
+    "name": "Yu-Han Cheng",
+    "email": "kaoshou@gmail.com"
+  },
+  "dependencies": {
+    "com.unity.inputsystem": "1.7.0"
+  },
+  "samples": [
+    {
+      "displayName": "Basic Demo",
+      "description": "Simple examples for reading micro:bit acceleration and buttons.",
+      "path": "Samples~/BasicDemo"
+    }
+  ],
+  "_fingerprint": "c645633d786807776cec48173eb4e62372b77728"
+}
