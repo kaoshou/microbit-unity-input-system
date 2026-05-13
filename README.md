@@ -179,7 +179,7 @@ https://github.com/kaoshou/microbit-unity-input-system.git?path=/MicrobitUnityIn
 在 Unity 中開啟：
 
 ```text
-Window → Package Manager → Unity Registry → Input System → Install
+Window → Package Management → Package Manager → Unity Registry → Input System → Install
 ```
 
 安裝後，Unity 可能會詢問是否啟用新的 Input System。建議允許 Unity 重新啟動。
@@ -466,69 +466,87 @@ CsvStringUsbSerialMicrobitSource
 
 ## Input Actions 設定方式
 
-本專案可以搭配 Unity Input Actions 使用，但對於連續加速度資料，不建議使用 `performed` callback 作為主要移動控制方式。建議在 `Update()` 中主動讀取 Action 值。
+本專案可以搭配 Unity Input Actions 使用。建議將 Input Actions 主要用於 **A / B 按鈕** 這類事件型輸入，例如跳躍、確認、攻擊、切換選單等。
 
-### 綁定完整三軸加速度
+對於 **加速度計** 這類連續感測資料，雖然可以綁定到 Input Actions，但不建議作為主要控制方式。原因是加速度資料會持續快速變化，若使用 `performed` callback 來處理移動，容易受到觸發頻率、資料抖動與事件更新時機影響，導致移動不夠穩定或反應不如預期。正式遊戲控制時，建議直接在 `Update()` 中讀取 `MicrobitInputDevice.current.acceleration.ReadValue()`，再自行進行 dead zone、平滑化或門檻判斷。
 
-Input Action 設定：
+---
+
+### 綁定 buttonA
+
+在 Input Actions Asset 中新增一個 Action，例如：
 
 ```text
+Action Name: ButtonA
+Action Type: Button
+Binding: <MicrobitInputDevice>/buttonA
+```
+---
+
+### 綁定 buttonB
+
+在 Input Actions Asset 中新增另一個 Action，例如：
+
+```text
+Action Name: ButtonB
+Action Type: Button
+Binding: <MicrobitInputDevice>/buttonB
+```
+
+---
+
+### Input Actions Asset 設定流程
+
+1. 在 Unity 專案中建立或開啟 `.inputactions` 檔案。
+2. 新增一個 Action Map，例如：
+
+```text
+Action Map: Microbit
+```
+
+3. 在該 Action Map 底下新增 `ButtonA` 與 `ButtonB` 兩個 Action。
+4. 將 `ButtonA` 設定為：
+
+```text
+Action Type: Button
+Binding Path: <MicrobitInputDevice>/buttonA
+```
+
+5. 將 `ButtonB` 設定為：
+
+```text
+Action Type: Button
+Binding Path: <MicrobitInputDevice>/buttonB
+```
+
+6. 儲存 Input Actions Asset。
+7. 若使用 `PlayerInput` 元件，請確認該元件有指定正確的 Input Actions Asset 與 Action Map。
+
+---
+
+### 不建議作為主要控制：加速度計綁定
+
+加速度計仍可在 Input Actions 中綁定，適合用於教學展示、資料觀察或簡單測試。
+
+若要綁定完整三軸加速度，可設定為：
+
+```text
+Action Name: Acceleration
 Action Type: Value
 Control Type: Vector3
 Binding: <MicrobitInputDevice>/acceleration
 ```
 
-C# 範例：
-
-```csharp
-using UnityEngine;
-using UnityEngine.InputSystem;
-
-public class MicrobitActionReader : MonoBehaviour
-{
-    public InputActionReference accelerationAction;
-
-    private void OnEnable()
-    {
-        accelerationAction.action.Enable();
-    }
-
-    private void OnDisable()
-    {
-        accelerationAction.action.Disable();
-    }
-
-    private void Update()
-    {
-        Vector3 accel = accelerationAction.action.ReadValue<Vector3>();
-        Debug.Log(accel);
-    }
-}
-```
-
-### 綁定單一 X 軸
-
-Input Action 設定：
+若只想觀察單一軸向，例如 X 軸，可設定為：
 
 ```text
+Action Name: AccelerationX
 Action Type: Value
 Control Type: Axis
 Binding: <MicrobitInputDevice>/acceleration/x
 ```
 
-C# 範例：
-
-```csharp
-float x = moveAction.action.ReadValue<float>();
-```
-
-不要寫成：
-
-```csharp
-context.ReadValue<Axis>();
-```
-
-因為 AxisControl 的實際值型別是 `float`，不是 `Axis`。
+但在正式遊戲控制中，仍建議直接讀取 micro:bit 裝置目前的加速度值，而不是依賴 Input Actions callback。這樣較容易處理連續輸入的平滑化、靈敏度、死區與瞬間晃動判斷。
 
 ---
 
