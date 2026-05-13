@@ -717,7 +717,7 @@ float x = moveAction.action.ReadValue<float>();
 
 ## Developer Information
 
-This project was designed and organized by **Prof. Yu-Han Cheng, Kun Shan University**, for the course **Motion Game Development** as a teaching package for Unity, micro:bit, and motion-based game interaction design.
+This project was designed and organized by **Yu-Han Cheng （鄭郁翰） of Kun Shan University** for the course Motion Game Development, as a teaching package for Unity, micro:bit, and motion-based game interaction design.
 
 ```text
 Developer: Yu-Han Cheng, Kun Shan University
