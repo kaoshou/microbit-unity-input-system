@@ -13,6 +13,7 @@
 ### 主要特色
 - 支援 Unity Input System，將 micro:bit 註冊為自訂輸入裝置 `MicrobitInputDevice`。
 - 支援三軸加速度 (X, Y, Z) 與 A / B 按鈕輸入。
+- **進階 API**：內建搖晃 (Shake)、揮動 (Swing) 與靜態姿態 (Tilt / Face) 偵測。
 - 支援 BLE 無線模式與 USB Serial (Binary / CSV) 有線模式。
 - 適合教學使用，程式架構清楚，便於學生觀察資料流與修改擴充。
 
@@ -36,6 +37,7 @@ This project is a course teaching package developed by **Prof. Yu-Han Cheng at K
 ### Features
 - Supports Unity Input System; registers micro:bit as a custom `MicrobitInputDevice`.
 - Supports three-axis acceleration (X, Y, Z) and A / B button inputs.
+- **Advanced API**: Built-in detection for Shake, Swing, and static postures (Tilt / Face).
 - Supports BLE wireless mode and USB Serial (Binary / CSV) wired modes.
 - Designed for education, with a clear structure for observing and extending data flows.
 

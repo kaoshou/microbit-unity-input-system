@@ -22,6 +22,16 @@ namespace tw.yuhan.MicrobitInputSystem
         [InputControl(name = "buttonA", layout = "Button", bit = 0)]
         [InputControl(name = "buttonB", layout = "Button", bit = 1)]
         public byte buttons;
+
+        [InputControl(name = "shake", layout = "Button", bit = 0)]
+        [InputControl(name = "swing", layout = "Button", bit = 1)]
+        [InputControl(name = "tiltLeft", layout = "Button", bit = 2)]
+        [InputControl(name = "tiltRight", layout = "Button", bit = 3)]
+        [InputControl(name = "tiltUp", layout = "Button", bit = 4)]
+        [InputControl(name = "tiltDown", layout = "Button", bit = 5)]
+        [InputControl(name = "faceUp", layout = "Button", bit = 6)]
+        [InputControl(name = "faceDown", layout = "Button", bit = 7)]
+        public byte gestures;
     }
 
     [InputControlLayout(stateType = typeof(MicrobitInputState), displayName = "micro:bit Input Device")]
@@ -36,6 +46,16 @@ namespace tw.yuhan.MicrobitInputSystem
         public ButtonControl buttonA { get; private set; }
         public ButtonControl buttonB { get; private set; }
 
+        // Gestures
+        public ButtonControl shake { get; private set; }
+        public ButtonControl swing { get; private set; }
+        public ButtonControl tiltLeft { get; private set; }
+        public ButtonControl tiltRight { get; private set; }
+        public ButtonControl tiltUp { get; private set; }
+        public ButtonControl tiltDown { get; private set; }
+        public ButtonControl faceUp { get; private set; }
+        public ButtonControl faceDown { get; private set; }
+
         protected override void FinishSetup()
         {
             base.FinishSetup();
@@ -45,7 +65,19 @@ namespace tw.yuhan.MicrobitInputSystem
             z = GetChildControl<AxisControl>("acceleration/z");
             buttonA = GetChildControl<ButtonControl>("buttonA");
             buttonB = GetChildControl<ButtonControl>("buttonB");
+
+            shake = GetChildControl<ButtonControl>("shake");
+            swing = GetChildControl<ButtonControl>("swing");
+            tiltLeft = GetChildControl<ButtonControl>("tiltLeft");
+            tiltRight = GetChildControl<ButtonControl>("tiltRight");
+            tiltUp = GetChildControl<ButtonControl>("tiltUp");
+            tiltDown = GetChildControl<ButtonControl>("tiltDown");
+            faceUp = GetChildControl<ButtonControl>("faceUp");
+            faceDown = GetChildControl<ButtonControl>("faceDown");
         }
+
+        public bool IsShake() => shake.isPressed;
+        public bool IsSwing() => swing.isPressed;
 
         public override void MakeCurrent()
         {

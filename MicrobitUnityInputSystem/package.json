@@ -1,6 +1,6 @@
 {
   "name": "tw.yuhan.microbit-input-system",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "micro:bit Unity Input System",
   "description": "Unity Input System custom device for BBC micro:bit via BLE built-in services, USB binary serial, and USB CSV serial.",
   "unity": "6000.3",

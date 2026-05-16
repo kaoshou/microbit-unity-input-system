@@ -8,6 +8,11 @@
 ![Input System](https://img.shields.io/badge/Unity%20Input%20System-supported-blue)
 ![micro:bit](https://img.shields.io/badge/BBC%20micro%3Abit-supported-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
+![Version](https://img.shields.io/badge/Version-1.1.0-orange)
+
+> [!IMPORTANT]
+> **v1.1.0 重大更新：進階手勢偵測 API**
+> 本版本新增了 **Shake (搖晃)**、**Swing (揮動)** 以及 **6 種靜態姿態 (Tilt/Face)** 偵測功能，並全面優化了感測器雜訊過濾與時間一致性演算法。現在 micro:bit 的動作偵測更加精準且穩定！
 
 ---
 
@@ -54,6 +59,14 @@
 <MicrobitInputDevice>/acceleration/z
 <MicrobitInputDevice>/buttonA
 <MicrobitInputDevice>/buttonB
+<MicrobitInputDevice>/shake
+<MicrobitInputDevice>/swing
+<MicrobitInputDevice>/tiltLeft
+<MicrobitInputDevice>/tiltRight
+<MicrobitInputDevice>/tiltUp
+<MicrobitInputDevice>/tiltDown
+<MicrobitInputDevice>/faceUp
+<MicrobitInputDevice>/faceDown
 ```
 
 其中：
@@ -66,6 +79,75 @@
 | `acceleration/z` | `float` | Z 軸加速度 |
 | `buttonA` | `Button` | micro:bit A 按鈕 |
 | `buttonB` | `Button` | micro:bit B 按鈕 |
+| `shake` | `Button` | 偵測是否正在**搖晃**（連續快速抖動板子） |
+| `swing` | `Button` | 偵測是否剛完成一次**揮動**（瞬間大力甩動板子） |
+| `tiltLeft` | `Button` | 偵測是否**向左傾斜**（讓 A 按鈕側朝向地板） |
+| `tiltRight` | `Button` | 偵測是否**向右傾斜**（讓 B 按鈕側朝向地板） |
+| `tiltUp` | `Button` | 偵測是否**向上傾斜**（讓 Logo 朝向天花板立著） |
+| `tiltDown` | `Button` | 偵測是否**向下傾斜**（讓 Logo 朝向地板倒立著） |
+| `faceUp` | `Button` | 偵測是否**正面朝上**（讓 LED 螢幕朝向天花板平放） |
+| `faceDown` | `Button` | 偵測是否**正面朝下**（讓 LED 螢幕朝向地板平放） |
+
+---
+
+## 進階 API (Advanced API)
+
+除了基礎的數值讀取，本套件還提供了進階手勢偵測 API，讓開發者能更輕鬆地判斷使用者的動態。
+
+### 1. 搖晃與揮動偵測
+
+可以直接透過 `MicrobitInputDevice` 的屬性或方法來判斷：
+
+```csharp
+var microbit = MicrobitInputDevice.current;
+if (microbit == null) return;
+
+// 1. 判斷是否「正在」搖晃
+if (microbit.IsShake()) 
+{
+    Debug.Log("Device is shaking!");
+}
+
+// 2. 判斷「這一幀」是否剛開始揮動 (Swing)
+if (microbit.swing.wasPressedThisFrame)
+{
+    Debug.Log("Sword Swing!");
+}
+```
+
+### 2. 靜態姿態判斷 (Tilt / Face)
+
+這些 API 適合用於判斷設備的擺放方向：
+
+```csharp
+if (microbit.faceUp.isPressed) 
+{
+    Debug.Log("Device is facing up on the table.");
+}
+
+if (microbit.tiltLeft.isPressed)
+{
+    Debug.Log("Steering left...");
+}
+```
+
+### 3. 設定靈敏度
+
+在 `MicrobitInputRuntime` 元件的 Inspector 中，可以調整下列參數來優化手勢偵測的表現：
+
+- **Shake Threshold (搖晃門檻值)**：
+    *   **定義**：偵測板子「動態能量」的門檻。
+    *   **說明**：數值愈**小**愈靈敏（預設 0.15）。它是偵測板子連續且快速地往返運動所產生的位移能。如果覺得要很用力搖才有反應，請調低此數值。
+- **Swing Threshold (揮動門檻值)**：
+    *   **定義**：偵測板子「瞬間 G 力」的門檻。
+    *   *說明**：數值愈**小**愈容易觸發揮動（預設 1.0）。它是偵測板子像揮劍或甩鞭子一樣，瞬間爆發出的加速度峰值。
+- **Tilt Threshold (傾斜判定門檻值)**：
+    *   **定義**：判斷重力在各軸向分配的比例門檻（建議 0.3 ~ 0.6）。
+    *   **說明**：數值愈**小**，代表板子只需要傾斜一點點角度就會觸發 `tilt` 或 `face` 狀態（預設 0.4）。
+- **Gesture Duration (手勢持續時間)**：
+    *   **說明**：當手勢（如搖晃或揮動）被觸發後，狀態會維持為 `True` 的時間（秒）。預設為 0.2 秒，這能確保 Input System 能穩定偵測到單次觸發。
+
+---
 
 ---
 
@@ -453,6 +535,8 @@ x,y,z,a,b
 | `a` | A 按鈕狀態 |
 | `b` | B 按鈕狀態 |
 
+---
+
 ## Unity 場景設定
 
 在 Unity 場景中建立空物件，掛上：
@@ -481,6 +565,7 @@ Action Name: ButtonA
 Action Type: Button
 Binding: <MicrobitInputDevice>/buttonA
 ```
+
 ---
 
 ### 綁定 buttonB
@@ -492,6 +577,30 @@ Action Name: ButtonB
 Action Type: Button
 Binding: <MicrobitInputDevice>/buttonB
 ```
+
+---
+
+### 綁定手勢 (Shake / Swing / Posture)
+
+除了按鈕，你也可以將手勢偵測（如搖晃、揮動或姿態判斷）綁定到 Input Actions。這對於處理「觸發型事件」（例如：揮劍攻擊、跳躍判斷）非常方便。
+
+**設定步驟：**
+1. 在 Input Actions Asset 中新增 Action (例如 `ShakeAction`)。
+2. 將 **Action Type** 設定為 `Button`。
+3. **Binding** 路徑選擇：`<MicrobitInputDevice>/shake`。
+
+在程式碼中，你可以使用 `performed` 事件來接收手勢觸發：
+
+```csharp
+public void OnShake(InputAction.CallbackContext context)
+{
+    if (context.performed)
+    {
+        Debug.Log("收到搖晃手勢！");
+    }
+}
+```
+
 
 ---
 
@@ -749,6 +858,26 @@ Repository：https://github.com/kaoshou/microbit-unity-input-system.git
 
 ---
 
+## 版本更新記錄
+
+### v1.1.0 (當前版本)
+- **新增進階手勢偵測 API**：
+    - `IsShake()`：偵測持續搖晃。
+    - `IsSwing()`：偵測瞬間揮動。
+    - `Posture Detection`：自動判斷 `tiltLeft` / `tiltRight` / `tiltUp` / `tiltDown` / `faceUp` / `faceDown` 等 6 種靜態姿態。
+- **演算法優化**：
+    - 引入時間一致性濾波器（Time-Invariant Filter），解決 USB CSV 模式下資料爆發导致的偵測失效問題。
+    - 分離重力向量與動態加速度，提升姿勢判斷與動態手勢的精準度，避免互相干擾。
+    - 修正首幀初始化跳變導致的誤判問題。
+- **文件更新**：詳細說明進階 API 路徑、物理操作定義與門檻值調優指南。
+
+### v1.0.0
+- 支援 Unity Input System 基本整合。
+- 提供三軸加速度與 A/B 按鈕輸入。
+- 支援 BLE、USB Binary、USB CSV 三種傳輸模式。
+
+---
+
 ## 致謝
 
 本專案使用或參考下列技術：
@@ -758,4 +887,6 @@ Repository：https://github.com/kaoshou/microbit-unity-input-system.git
 - [BBC micro:bit](https://microbit.org/)
 - [Microsoft MakeCode for micro:bit](https://makecode.microbit.org/)
 - [BleWinrtDll](https://github.com/adabru/BleWinrtDll)
+
+---
 
